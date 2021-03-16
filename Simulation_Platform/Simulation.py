@@ -6,6 +6,18 @@ class Grid:
     
     
     """
+    Directions = {
+        "N"     : 0,
+        "E"     : 1,
+        "S"     : 2,
+        "W"     : 3
+    }
+    DirectionMap = {
+        0 : (0,-1)  , #North 
+        1 : (1,0)   , #East
+        2 : (0,1)   , #South
+        3 : (-1,0)  , #West
+    }
     states = {
         "INVALID"   : -1,
         "FREE"      : 0,
@@ -15,12 +27,14 @@ class Grid:
     def __init__(self,rows,columns,array=None):
         if(array == None):
             self.array = [0 for _ in range(rows*columns)] #By default all the tiles are free
-        if(len(array) != rows*columns):
-            raise Exception("Invalid map provided")
-  
-        self.array = [i for i in array]
+        else:
+            if(len(array) != rows*columns):
+                raise Exception("Invalid map provided")
+            self.array = [i for i in array]
         self.rows = rows
         self.columns = columns
+        self.UnblockedTiles = self.array.count(self.states["FREE"])
+        self.cleanedTiles = 0
     def getTileState(self,x,y)->int:
         if(x <0 or y <0 or x>self.columns or y > self.rows):
             return -1
@@ -32,9 +46,33 @@ class Grid:
     def cleanTile(self,x,y):
         if(self.getTileState(x,y) == self.states["FREE"]):
             self.setstate(x,y,"CLEAN")
+            self.cleanedTiles += 1
             return True
         return False
 
+
+    def Invalid(self,x,y):
+        return self.getTileState(x,y) == self.states["INVALID"]
+    
+    def blocked(self,x,y):
+        return self.getTileState(x,y) == self.states["BLOCKED"]
+    
+    def Id(self,x,y):
+        if(x <0 or  y <0 or x>self.columns or y > self.rows):
+            return None
+        return y*self.columns +x
+    
+    def getNeighbours(self,x,y):
+        connections = []
+        if(self.Invalid(x,y)):
+            return connections
+        for key in self.DirectionMap:
+            dx,dy = self.DirectionMap[key]
+            newX,newY = x+dx,y+dy
+            Id = self.Id(newX,newY)
+            if(Id != None):
+                connection.append(Id)
+    
 
 
 class Robot:
@@ -68,7 +106,7 @@ class Robot:
         "Forward" : 0,
     }
 
-    def __init__(self,grid :Grid,startX,startY,orientation=Robot.Directions["N"]):
+    def __init__(self,grid :Grid,startX,startY,orientation=Directions["N"]):
         if(grid.getTileState(startX,startY) != grid.states["FREE"]):
             raise Exception("Invalid Start Position")
         self.X = startX
@@ -166,6 +204,7 @@ class Robot:
         orientation = (self.orientation+self.RelativeDirections[relativeDirection])%4
         return self.goToNeighboutSquareABS(orientation)
 
+    
 
 
 
