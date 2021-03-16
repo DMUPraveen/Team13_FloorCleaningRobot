@@ -87,6 +87,7 @@ class Dijkstar():
             path.append(topNode.id)
             topNode = topNode.parent
         self.reset()
+        path.reverse()
         return path
 
 

@@ -130,7 +130,7 @@ class Robot:
         self.grid = grid
         self.moves = [self.PossibleMoves["Spray"]] #moves taken so far (Including the first spray)
         self.time = 1 #time taken so far (Time taken for the spray action)
-
+        self.grid.cleanTile(self.X,self.Y)
     def incrementTime(self,time:int):
         self.time += time
     def addMove(self,move:str):
@@ -197,6 +197,10 @@ class Robot:
         
         self.setOrientation(Neworientation)
 
+    def getNeighbourIdABS(self,orientation:int):
+        dx,dy = self.DirectionMap[orientation]
+        return self.grid.Id(self.X+dx,self.Y+dy)
+        
     def getNeighbourSquareABS(self,orientation:int):
         dx,dy = self.DirectionMap[orientation]
         return self.grid.getTileState(self.X+dx,self.Y+dy)
@@ -218,8 +222,24 @@ class Robot:
         orientation = (self.orientation+self.RelativeDirections[relativeDirection])%4
         return self.goToNeighboutSquareABS(orientation)
 
-    def followPath(self,tileset):
-        passs
+    def followPath(self,tilelist):
+        if(tilelist[0] != self.grid.Id(self.X,self.Y)):
+            return False
+        tilelist.pop(0)
+        for tile in tilelist:
+            doneFlag = False
+            
+            for orientation in self.DirectionMap:
+                Id = self.getNeighbourIdABS(orientation)
+                if(Id == tile):
+                    if(not self.goToNeighboutSquareABS(orientation)):
+                        return False
+                    doneFlag = True
+                    break
+            if(not doneFlag):
+                return False
+        return True
+
 
 
 

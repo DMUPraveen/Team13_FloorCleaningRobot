@@ -7,10 +7,10 @@ from ExampleGrids import JanakSirsExampleGrid
 from HelperFunctions import Dijkstar
 
 
-def main(grid):
+def main(grid,robot):
     pygame.init()
 
-    robot = Robot(grid,0,0)
+
     cellSize = 30
     width = grid.columns*cellSize
     height = grid.columns*cellSize
@@ -68,9 +68,9 @@ def testDijkStart(grid,x,y):
 
 
 if __name__ == "__main__":
-    main(JanakSirsExampleGrid())
+
     lis = testDijkStart(JanakSirsExampleGrid(),2,9)
     grid = JanakSirsExampleGrid()
-    for i in lis:
-        grid.cleanTile(*grid.getXY(i))
-    main(grid)
+    robo = Robot(grid,2,9)
+    print(robo.followPath(lis))
+    main(grid,robo)
