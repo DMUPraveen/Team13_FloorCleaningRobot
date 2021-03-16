@@ -49,6 +49,7 @@ def replay(grid,robocommands,startX,startY,startOrientation):
         for event in pygame.event.get():
             if(event.type == QUIT):
                 pygame.quit()
+                print(robo.time)
                 return
         
 
@@ -78,6 +79,16 @@ def distanceFunction(D,O,tO,state):
     if(state == Grid.states["FREE"]):
         time += Robot.SprayTime
     return D+time
+
+
+
+def distanceAvoidCleaned(Distance,Orientation,targetOrientation,state):
+    d = distanceFunction(Distance[1],Orientation,targetOrientation,state)
+    if(state == Grid.states["FREE"]):
+        return (0,d)
+    else:
+        return (1,d)
+
 
 def testGetNeighbours():
     grid = JanakSirsExampleGrid()

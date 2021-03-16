@@ -58,11 +58,11 @@ class Dijkstar():
 
     def Isin(self,id):
         return (id in self.NodeMap)
-    def Run(self,startId,startOrientation,endFunction,grid :Grid,distanceFunction):
+    def Run(self,startId,startOrientation,endFunction,grid :Grid,distanceFunction,initialDistance=0):
         '''endfunction is of the form Node->bool'''
         finished = False
         self.addNewNode(
-            DijkstarNode(startOrientation,0,startId)
+            DijkstarNode(startOrientation,initialDistance,startId)
         )
         topNode = None
         while (len(self.Nodes) != 0):

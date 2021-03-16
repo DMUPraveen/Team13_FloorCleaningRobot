@@ -2,7 +2,7 @@
 
 from Simulation_Platform.Simulation import Grid,Robot
 from Simulation_Platform.HelperFunctions import Dijkstar,DijkstarNode
-from Simulation_Platform.Main import distanceFunction,replay
+from Simulation_Platform.Main import distanceFunction,replay,distanceAvoidCleaned
 from Simulation_Platform.ExampleGrids import JanakSirsExampleGrid
 
 
@@ -11,6 +11,9 @@ def roboConditionaBreak(grid,robot,Id):
         print("Breaking")
 
 def Algorithm(grid :Grid,startX :int,startY:int,startOrientation:int):
+    '''
+    Goes to the nearest unclean tile
+    '''
     def Endfunction(Node :DijkstarNode ):
         return grid.GetStateofId(Node.id) == Grid.states["FREE"]
 
@@ -39,6 +42,38 @@ def Algorithm(grid :Grid,startX :int,startY:int,startOrientation:int):
     print(robo.time)
     print("->".join(robo.moves))
 
+def AlgorithmAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int):
+    '''
+    Goes to the nearest unclean tile
+    '''
+    def Endfunction(Node :DijkstarNode ):
+        return grid.GetStateofId(Node.id) == Grid.states["FREE"]
+
+    robo = Robot(grid,startX,startY,startOrientation)
+    pathFinder = Dijkstar()
+    while True:
+        roboConditionaBreak(grid,robo,18)
+        path = pathFinder.Run(
+            grid.Id(robo.X,robo.Y),
+            robo.orientation,
+            Endfunction,
+            grid,
+            distanceAvoidCleaned,
+            (0,0)
+        )
+        if(len(path) == 0):
+            break
+        robo.followPath(path)
+        
+    replay(
+        JanakSirsExampleGrid(),
+        robo.moves,
+        startX,
+        startY,
+        startOrientation
+    )
+    print(robo.time)
+    print("->".join(robo.moves))
 
 
 if __name__ == "__main__":
