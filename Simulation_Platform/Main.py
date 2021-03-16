@@ -14,7 +14,7 @@ def show(grid,robot):
 
     cellSize = 30
     width = grid.columns*cellSize
-    height = grid.columns*cellSize
+    height = grid.rows*cellSize
     window = pygame.display.set_mode((width,height))
     pygame.display.set_caption("Floor Cleaner")
     Graphics = GFX(window,width,height,grid,robot,cellSize)
@@ -39,7 +39,7 @@ def replay(grid,robocommands,startX,startY,startOrientation):
     robo = Robot(grid,startX,startY,startOrientation)
     cellSize = 30
     width = grid.columns*cellSize
-    height = grid.columns*cellSize
+    height = grid.rows*cellSize
     window = pygame.display.set_mode((width,height))
     pygame.display.set_caption("Floor Cleaner")
     Graphics = GFX(window,width,height,grid,robo,cellSize)
