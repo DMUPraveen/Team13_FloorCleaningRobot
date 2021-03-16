@@ -190,8 +190,9 @@ def SpiralOrZigZag(gridmaker,startX,startY,startOrientation):
                 )
             sols.append((time,path))
     sols.sort(key = lambda x : x[0])
-    print([i[0] for i in sols])
+    #print([i[0] for i in sols])
     solution = sols.pop(0)
+    '''
     replay(
         gridmaker(),
         solution[1],
@@ -199,6 +200,7 @@ def SpiralOrZigZag(gridmaker,startX,startY,startOrientation):
         startY,
         startOrientation
     )
+    '''
     return solution
 
         
@@ -218,8 +220,9 @@ def SpiralOrZigZagAvoidCleaned(gridmaker,startX,startY,startOrientation):
                 )
             sols.append((time,path))
     sols.sort(key = lambda x : x[0])
-    print([i[0] for i in sols])
+    #print([i[0] for i in sols])
     solution = sols.pop(0)
+    '''
     replay(
         gridmaker(),
         solution[1],
@@ -227,6 +230,7 @@ def SpiralOrZigZagAvoidCleaned(gridmaker,startX,startY,startOrientation):
         startY,
         startOrientation
     )
+    '''
     return solution
        
     

@@ -10,17 +10,18 @@ def roboConditionaBreak(grid,robot,Id):
     if(grid.Id(robot.X,robot.Y) == Id):
         print("Breaking")
 
-def RepeatedDijkstart(grid :Grid,startX :int,startY:int,startOrientation:int):
+def RepeatedDijkstart(gridmaker,startX :int,startY:int,startOrientation:int):
     '''
     Goes to the nearest unclean tile
     '''
+    grid = gridmaker()
     def Endfunction(Node :DijkstarNode ):
         return grid.GetStateofId(Node.id) == Grid.states["FREE"]
 
     robo = Robot(grid,startX,startY,startOrientation)
     pathFinder = Dijkstar()
     while True:
-        roboConditionaBreak(grid,robo,18)
+        
         path = pathFinder.Run(
             grid.Id(robo.X,robo.Y),
             robo.orientation,
@@ -32,29 +33,32 @@ def RepeatedDijkstart(grid :Grid,startX :int,startY:int,startOrientation:int):
             break
         robo.followPath(path)
         
+    '''
     replay(
-        JanakSirsExampleGrid(),
+        gridmaker(),
         robo.moves,
         startX,
         startY,
         startOrientation
     )
+    '''
     return (
     (robo.time),
-    ("->".join(robo.moves))
+    (robo.moves)
     )
 
-def RepeatedDijkstartAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int):
+def RepeatedDijkstartAvoidCleaned(gridmaker,startX :int,startY:int,startOrientation:int):
     '''
     Goes to the nearest unclean tile
     '''
+    grid = gridmaker()
     def Endfunction(Node :DijkstarNode ):
         return grid.GetStateofId(Node.id) == Grid.states["FREE"]
 
     robo = Robot(grid,startX,startY,startOrientation)
     pathFinder = Dijkstar()
     while True:
-        roboConditionaBreak(grid,robo,18)
+        
         path = pathFinder.Run(
             grid.Id(robo.X,robo.Y),
             robo.orientation,
@@ -66,23 +70,30 @@ def RepeatedDijkstartAvoidCleaned(grid :Grid,startX :int,startY:int,startOrienta
         if(len(path) == 0):
             break
         robo.followPath(path)
-        
+    ''' 
     replay(
-        JanakSirsExampleGrid(),
+        gridmaker(),
         robo.moves,
         startX,
         startY,
         startOrientation
     )
+    '''
     return (
     (robo.time),
-    ("->".join(robo.moves))
+    (robo.moves)
     )
 
 
 if __name__ == "__main__":
     RepeatedDijkstart(
-        JanakSirsExampleGrid(),
+        JanakSirsExampleGrid,
+        2,
+        9,
+        0
+    )
+    RepeatedDijkstartAvoidCleaned(
+        JanakSirsExampleGrid,
         2,
         9,
         0

@@ -30,8 +30,21 @@ def show(grid,robot):
         pygame.display.update()
         Graphics.clear()
 
+def compileTime(moves):
+    time = 0
+    dic = {
+        "SP" : 1,
+        "MF" : 1,
+        "TR" : 2,
+        "TL" : 2,
+    }
+    for move in moves:
+        time += dic[move]
 
-def replay(grid,robocommands,startX,startY,startOrientation):
+    return time
+        
+
+def replay(grid,robocommands,startX,startY,startOrientation,):
     replaySpeed = 0.02
     
     pygame.init()
@@ -62,7 +75,40 @@ def replay(grid,robocommands,startX,startY,startOrientation):
             robo.play(commands.pop(0))
             t = time()
 
+def replayR(grid,robocommands,startX,startY,startOrientation,):
+    replaySpeed = 0.02
+    
+    pygame.init()
+    commands = [i for i in robocommands]
+    robo = Robot(grid,startX,startY,startOrientation)
+    cellSize = 30
+    width = grid.columns*cellSize
+    height = grid.rows*cellSize
+    window = pygame.display.set_mode((width,height))
+    pygame.display.set_caption("Floor Cleaner")
+    Graphics = GFX(window,width,height,grid,robo,cellSize)
+    t = time()
+    start = False
+    while True:
+        
+        for event in pygame.event.get():
+            if(event.type == QUIT):
+                pygame.quit()
+                #print(robo.time)
+                return
+            if(event.type == KEYDOWN):
+                if(event.key == K_SPACE):
+                    start = True
+        
 
+        Graphics.draw()
+        
+        pygame.display.update()
+        Graphics.clear()
+        if(time() -t > replaySpeed and len(commands)!=0 and start):
+
+            robo.play(commands.pop(0))
+            t = time()
 
 
 def distanceFunction(D,O,tO,state):

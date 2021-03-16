@@ -3,22 +3,29 @@ from Simulation_Platform.HelperFunctions import Dijkstar,DijkstarNode
 from Simulation_Platform.Main import distanceFunction,replay,distanceAvoidCleaned
 from Simulation_Platform.ExampleGrids import JanakSirsExampleGrid
 
-def HuggingTheWalls(grid :Grid,startX :int,startY:int,startOrientation:int):
+def HuggingTheWallsInternal(gridmaker,startX :int,startY:int,startOrientation:int,direction = 1):
+    grid = gridmaker()
     def Endfunction(Node :DijkstarNode ):
         return grid.GetStateofId(Node.id) == Grid.states["FREE"]
     robo = Robot(grid,startX,startY,startOrientation)
     pathFinder = Dijkstar()
+    if(direction == 1):
+        first = "Left"
+        second = "Right"
+    else:
+        first = "Right"
+        second = "Left"
 
     while True:
         
-        if(robo.getNeighbourSquareREL("Left") == Grid.states["FREE"]):
-            robo.goToNeighboutSquareREL('Left')
+        if(robo.getNeighbourSquareREL(first) == Grid.states["FREE"]):
+            robo.goToNeighboutSquareREL(first)
             
         elif(robo.getNeighbourSquareREL("Forward") == Grid.states["FREE"]):
             robo.goToNeighboutSquareREL('Forward')
 
-        elif(robo.getNeighbourSquareREL('Right') == Grid.states["FREE"]):
-            robo.goToNeighboutSquareREL('Right')
+        elif(robo.getNeighbourSquareREL(second) == Grid.states["FREE"]):
+            robo.goToNeighboutSquareREL(second)
         
         elif(robo.getNeighbourSquareREL('Back') == Grid.states["FREE"]):
             robo.goToNeighboutSquareREL('Back')
@@ -34,36 +41,45 @@ def HuggingTheWalls(grid :Grid,startX :int,startY:int,startOrientation:int):
             if(len(path) == 0):
                 break
             robo.followPath(path)
+    '''
     replay(
-        JanakSirsExampleGrid(),
+        gridmaker(),
         robo.moves,
         startX,
         startY,
         startOrientation
     )
+    '''
     return (
     (robo.time),
-    ("->".join(robo.moves))
+    (robo.moves)
     )
         
 
 
-def HuggingTheWallsAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int):
+def HuggingTheWallsAvoidCleanedInternal(gridmaker,startX :int,startY:int,startOrientation:int,direction = 1):
+    grid = gridmaker()
     def Endfunction(Node :DijkstarNode ):
         return grid.GetStateofId(Node.id) == Grid.states["FREE"]
     robo = Robot(grid,startX,startY,startOrientation)
     pathFinder = Dijkstar()
+    if(direction == 1):
+        first = "Left"
+        second = "Right"
+    else:
+        first = "Right"
+        second = "Left"
 
     while True:
         
-        if(robo.getNeighbourSquareREL("Left") == Grid.states["FREE"]):
-            robo.goToNeighboutSquareREL('Left')
+        if(robo.getNeighbourSquareREL(first) == Grid.states["FREE"]):
+            robo.goToNeighboutSquareREL(first)
             
         elif(robo.getNeighbourSquareREL("Forward") == Grid.states["FREE"]):
             robo.goToNeighboutSquareREL('Forward')
 
-        elif(robo.getNeighbourSquareREL('Right') == Grid.states["FREE"]):
-            robo.goToNeighboutSquareREL('Right')
+        elif(robo.getNeighbourSquareREL(second) == Grid.states["FREE"]):
+            robo.goToNeighboutSquareREL(second)
         
         elif(robo.getNeighbourSquareREL('Back') == Grid.states["FREE"]):
             robo.goToNeighboutSquareREL('Back')
@@ -80,26 +96,47 @@ def HuggingTheWallsAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientati
             if(len(path) == 0):
                 break
             robo.followPath(path)
+    '''
     replay(
-        JanakSirsExampleGrid(),
+        gridmaker(),
         robo.moves,
         startX,
         startY,
         startOrientation
     )
+    '''
     return (
     (robo.time),
-    ("->".join(robo.moves))
+    (robo.moves)
     )
   
 
+def HuggingTheWalls(gridmaker,startX :int,startY:int,startOrientation:int):
+    return min(
+        (HuggingTheWallsInternal(gridmaker,startX,startY,startOrientation,1),
+        HuggingTheWallsInternal(gridmaker,startX,startY,startOrientation,-1)),
+        key = lambda x : x[0]
+    )
 
-
+def HuggingTheWallsAvoidCleaned(gridmaker,startX :int,startY:int,startOrientation:int):
+    return min(
+        (HuggingTheWallsAvoidCleanedInternal(gridmaker,startX,startY,startOrientation,1),
+        HuggingTheWallsAvoidCleanedInternal(gridmaker,startX,startY,startOrientation,-1)),
+        key = lambda x : x[0]
+    )
 
 if __name__ == "__main__":
     print(HuggingTheWalls(
-        JanakSirsExampleGrid(),
+        JanakSirsExampleGrid,
         2,
         9,
         0
     ))
+    print(HuggingTheWallsAvoidCleaned(
+        JanakSirsExampleGrid,
+        2,
+        9,
+        0
+    ))
+
+    
