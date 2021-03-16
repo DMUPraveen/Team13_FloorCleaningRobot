@@ -32,7 +32,7 @@ def show(grid,robot):
 
 
 def replay(grid,robocommands,startX,startY,startOrientation):
-    replaySpeed = 0.01
+    replaySpeed = 0.02
     
     pygame.init()
     commands = [i for i in robocommands]

@@ -10,7 +10,7 @@ def roboConditionaBreak(grid,robot,Id):
     if(grid.Id(robot.X,robot.Y) == Id):
         print("Breaking")
 
-def Algorithm(grid :Grid,startX :int,startY:int,startOrientation:int):
+def RepeatedDijkstart(grid :Grid,startX :int,startY:int,startOrientation:int):
     '''
     Goes to the nearest unclean tile
     '''
@@ -39,10 +39,12 @@ def Algorithm(grid :Grid,startX :int,startY:int,startOrientation:int):
         startY,
         startOrientation
     )
-    print(robo.time)
-    print("->".join(robo.moves))
+    return (
+    (robo.time),
+    ("->".join(robo.moves))
+    )
 
-def AlgorithmAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int):
+def RepeatedDijkstartAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int):
     '''
     Goes to the nearest unclean tile
     '''
@@ -72,12 +74,14 @@ def AlgorithmAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int
         startY,
         startOrientation
     )
-    print(robo.time)
-    print("->".join(robo.moves))
+    return (
+    (robo.time),
+    ("->".join(robo.moves))
+    )
 
 
 if __name__ == "__main__":
-    Algorithm(
+    RepeatedDijkstart(
         JanakSirsExampleGrid(),
         2,
         9,

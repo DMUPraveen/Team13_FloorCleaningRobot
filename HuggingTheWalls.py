@@ -3,7 +3,7 @@ from Simulation_Platform.HelperFunctions import Dijkstar,DijkstarNode
 from Simulation_Platform.Main import distanceFunction,replay,distanceAvoidCleaned
 from Simulation_Platform.ExampleGrids import JanakSirsExampleGrid
 
-def Algorithm(grid :Grid,startX :int,startY:int,startOrientation:int):
+def HuggingTheWalls(grid :Grid,startX :int,startY:int,startOrientation:int):
     def Endfunction(Node :DijkstarNode ):
         return grid.GetStateofId(Node.id) == Grid.states["FREE"]
     robo = Robot(grid,startX,startY,startOrientation)
@@ -41,12 +41,14 @@ def Algorithm(grid :Grid,startX :int,startY:int,startOrientation:int):
         startY,
         startOrientation
     )
-    print(robo.time)
-    print("->".join(robo.moves))
+    return (
+    (robo.time),
+    ("->".join(robo.moves))
+    )
         
 
 
-def AlgorithmAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int):
+def HuggingTheWallsAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int):
     def Endfunction(Node :DijkstarNode ):
         return grid.GetStateofId(Node.id) == Grid.states["FREE"]
     robo = Robot(grid,startX,startY,startOrientation)
@@ -85,17 +87,19 @@ def AlgorithmAvoidCleaned(grid :Grid,startX :int,startY:int,startOrientation:int
         startY,
         startOrientation
     )
-    print(robo.time)
-    print("->".join(robo.moves))
+    return (
+    (robo.time),
+    ("->".join(robo.moves))
+    )
   
 
 
 
 
 if __name__ == "__main__":
-    Algorithm(
+    print(HuggingTheWalls(
         JanakSirsExampleGrid(),
         2,
         9,
         0
-    )
+    ))
