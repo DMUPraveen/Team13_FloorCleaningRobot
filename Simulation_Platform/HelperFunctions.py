@@ -17,6 +17,7 @@ class Dijkstar():
     def reset(self):
         self.NodeMap.clear()
         self.Nodes.clear()
+        self.finished.clear()
     
     def popNode(self):
         if(len(self.Nodes) == 0):
@@ -59,7 +60,7 @@ class Dijkstar():
         return (id in self.NodeMap)
     def Run(self,startId,startOrientation,endFunction,grid :Grid,distanceFunction):
         '''endfunction is of the form Node->bool'''
-
+        finished = False
         self.addNewNode(
             DijkstarNode(startOrientation,0,startId)
         )
@@ -68,6 +69,7 @@ class Dijkstar():
             topNode = self.popNode()
             self.finish(topNode.id)
             if(endFunction(topNode)):
+                finished = True
                 break
             x,y = grid.getXY(topNode.id)
             connections = grid.getNeighbours(x,y,topNode.orientation,topNode.distance,distanceFunction)
@@ -83,6 +85,8 @@ class Dijkstar():
                         )
 
         path = []
+        if(not finished):
+            return path
         while(topNode != None):
             path.append(topNode.id)
             topNode = topNode.parent

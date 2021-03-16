@@ -79,7 +79,7 @@ class Grid:
             Id = self.Id(newX,newY)
             if(Id != None):
                 state = self.getTileState(newX,newY)
-                if(state != self.states["BLOCKED"] or state):
+                if(state != self.states["BLOCKED"]):
                     newDistance = distanceFunction(distance,orientation,targetOrientation,state)
 
                     connections.append((Id,newDistance,targetOrientation))
@@ -89,6 +89,7 @@ class Grid:
         x = id %self.columns
         y = id //self.columns
         return (x,y)
+
 class Robot:
     Directions = {
         "N"     : 0,
@@ -152,7 +153,7 @@ class Robot:
     def Spray(self):
         self.incrementTime(self.SprayTime)
         self.addMove("Spray")
-        return self.grid.cleanTile(self.x,self.y)
+        return self.grid.cleanTile(self.X,self.Y)
 
     def moveForward(self):
         newX = self.X + self.Vx

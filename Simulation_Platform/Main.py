@@ -3,6 +3,7 @@ from pygame.locals import *
 from Simulation import Grid,Robot
 from GraphicEngine import GFX
 from ExampleGrids import JanakSirsExampleGrid
+from time import time
 
 from HelperFunctions import Dijkstar
 
@@ -28,6 +29,40 @@ def main(grid,robot):
         
         pygame.display.update()
         Graphics.clear()
+
+
+def replay(grid,robocommands,startX,startY,startOrientation):
+    replaySpeed = 0.01
+    
+    pygame.init()
+    commands = [i for i in robocommands]
+    robo = Robot(grid,startX,startY,startOrientation)
+    cellSize = 30
+    width = grid.columns*cellSize
+    height = grid.columns*cellSize
+    window = pygame.display.set_mode((width,height))
+    pygame.display.set_caption("Floor Cleaner")
+    Graphics = GFX(window,width,height,grid,robo,cellSize)
+    t = time()
+    while True:
+        
+        for event in pygame.event.get():
+            if(event.type == QUIT):
+                pygame.quit()
+                return
+        
+
+        Graphics.draw()
+        
+        pygame.display.update()
+        Graphics.clear()
+        if(time() -t > replaySpeed and len(commands)!=0):
+
+            robo.play(commands.pop(0))
+            t = time()
+
+
+
 
 def distanceFunction(D,O,tO,state):
     turnFactor = (tO-O)%4
@@ -73,4 +108,4 @@ if __name__ == "__main__":
     grid = JanakSirsExampleGrid()
     robo = Robot(grid,2,9)
     print(robo.followPath(lis))
-    main(grid,robo)
+    replay(JanakSirsExampleGrid(),robo.moves,2,9,0)
