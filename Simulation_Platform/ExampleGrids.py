@@ -13,4 +13,4 @@ JanakaSirsExmpleGridArray = [
 
 ]
 
-JanakSirsExampleGrid = Grid(10,10,JanakaSirsExmpleGridArray)
+JanakSirsExampleGrid = lambda :Grid(10,10,JanakaSirsExmpleGridArray)

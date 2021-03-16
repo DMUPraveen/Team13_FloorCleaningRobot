@@ -40,12 +40,12 @@ class Grid:
             return -1
         return self.array[y*self.columns +x]
     def setstate(self,x,y,state:str):
-        assert(self.getTileState(x,y) !=self.states["Invalid"])
+        assert(self.getTileState(x,y) !=self.states["INVALID"])
         self.array[y*self.columns+x] = self.states[state]
 
     def cleanTile(self,x,y):
         if(self.getTileState(x,y) == self.states["FREE"]):
-            self.setstate(x,y,"CLEAN")
+            self.setstate(x,y,"CLEANED")
             self.cleanedTiles += 1
             return True
         return False
@@ -57,22 +57,32 @@ class Grid:
     def blocked(self,x,y):
         return self.getTileState(x,y) == self.states["BLOCKED"]
     
+    
+    
     def Id(self,x,y):
         if(x <0 or  y <0 or x>self.columns or y > self.rows):
             return None
         return y*self.columns +x
     
-    def getNeighbours(self,x,y):
-        connections = []
+    def getNeighbours(self,x,y,orientation:int,distance,distanceFunction):
+        """
+            distance function should be of the form
+            distanceFunction(currentDistance,orientation,targetorientation,targetCellState)
+        """
+        connections = [] #(Id,distance,newOrientation)
         if(self.Invalid(x,y)):
             return connections
-        for key in self.DirectionMap:
-            dx,dy = self.DirectionMap[key]
+        for targetOrientation in self.DirectionMap:
+            dx,dy = self.DirectionMap[targetOrientation]
             newX,newY = x+dx,y+dy
             Id = self.Id(newX,newY)
             if(Id != None):
-                connection.append(Id)
-    
+                state = self.getTileState(newX,newY)
+                if(state != self.states["BLOCKED"]):
+                    newDistance = distanceFunction(distance,orientation,targetOrientation,state)
+
+                    connections.append((Id,newDistance,targetOrientation))
+        return connections
 
 
 class Robot:
@@ -193,7 +203,7 @@ class Robot:
 
     def goToNeighboutSquareABS(self,orientation:int):
         state = self.getNeighbourSquareABS(orientation)
-        if(state == Grid.states["CLEAN"] or state == Grid.states["FREE"]):
+        if(state == Grid.states["CLEANED"] or state == Grid.states["FREE"]):
             self.turntoOrientation(orientation)
             self.moveForward()
             return True
