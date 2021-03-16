@@ -36,7 +36,7 @@ class Grid:
         self.UnblockedTiles = self.array.count(self.states["FREE"])
         self.cleanedTiles = 0
     def getTileState(self,x,y)->int:
-        if(x <0 or y <0 or x>self.columns or y > self.rows):
+        if(x <0 or y <0 or x>=self.columns or y >= self.rows):
             return -1
         return self.array[y*self.columns +x]
     def setstate(self,x,y,state:str):
@@ -57,10 +57,11 @@ class Grid:
     def blocked(self,x,y):
         return self.getTileState(x,y) == self.states["BLOCKED"]
     
-    
+    def GetStateofId(self,id):
+        return self.array[id]
     
     def Id(self,x,y):
-        if(x <0 or  y <0 or x>self.columns or y > self.rows):
+        if(x <0 or  y <0 or x>=self.columns or y >= self.rows):
             return None
         return y*self.columns +x
     
@@ -70,7 +71,7 @@ class Grid:
             distanceFunction(currentDistance,orientation,targetorientation,targetCellState)
         """
         connections = [] #(Id,distance,newOrientation)
-        if(self.Invalid(x,y)):
+        if(self.Invalid(x,y) or self.blocked(x,y)):
             return connections
         for targetOrientation in self.DirectionMap:
             dx,dy = self.DirectionMap[targetOrientation]
@@ -78,13 +79,16 @@ class Grid:
             Id = self.Id(newX,newY)
             if(Id != None):
                 state = self.getTileState(newX,newY)
-                if(state != self.states["BLOCKED"]):
+                if(state != self.states["BLOCKED"] or state):
                     newDistance = distanceFunction(distance,orientation,targetOrientation,state)
 
                     connections.append((Id,newDistance,targetOrientation))
         return connections
 
-
+    def getXY(self,id:int):
+        x = id %self.columns
+        y = id //self.columns
+        return (x,y)
 class Robot:
     Directions = {
         "N"     : 0,
@@ -214,7 +218,8 @@ class Robot:
         orientation = (self.orientation+self.RelativeDirections[relativeDirection])%4
         return self.goToNeighboutSquareABS(orientation)
 
-    
+    def followPath(self,tileset):
+        passs
 
 
 

@@ -1,104 +1,93 @@
 
-
+from Simulation import Grid
 class DijkstarNode():
-    def __init__(self,orientation,connections,distance=float('inf'),parent=None):
+    def __init__(self,orientation,distance,Id,parent=None):
         self.orientation = orientation
-        self.distacne = distance
+        self.distance = distance
         self.parent = parent
-        self.connections = connections
+        self.id = Id
+
+class Dijkstar():
+    def __init__(self):
+        self.NodeMap = {} #Id -> Node
+        self.Nodes= []
+        self.finished = set()
 
 
-
-
-
-
-
-class PriorityQueue:
-    NoIndex = -1
-    def __init__(self,compareFunction):
-        '''The compare function should return True if the first index
-        should be higher in the priority queue '''
-        self.array = []
-        self.compareFunction = compareFunction
-        self.size = 0
-        self.indexes = {}
-        
-
-
-    def IndexOf(self,val):
-        if(val not in self.indexes):
-            return NoIndex
-
+    def reset(self):
+        self.NodeMap.clear()
+        self.Nodes.clear()
+    
+    def popNode(self):
+        if(len(self.Nodes) == 0):
+            return None
         else:
-            return self.indexes[val]
+            return self.Nodes.pop(0)
 
-    def higher(self,Index1,Index2):
-        return self.compareFunction(self.array[Index1],self.array[Index2])
-    
-    @staticmethod
-    def left(i):
-        return 2*i+1
+    def sort(self):
+        self.Nodes.sort(key = lambda x : x.distance)
 
-    @staticmethod
-    def right(i):
-        return 2*i+2
-
-    @staticmethod
-    def parent(i):
-        return (i-1)//2
-
-
-    def swap(self,i,j):
-        self.indexes[self.array[i]] = j
-        self.indexes[self.array[j]] = i
-        self.array[i] ,self.array[j] = self.array[j] , self.array[i]
+    def addNewNode(self,Node : DijkstarNode):
+        if(Node.id in self.NodeMap):
+            return False
+        else:
+            self.NodeMap[Node.id] = Node
+            self.Nodes.append(Node)
+            self.sort()
         
+        return True
 
-    def heapify(self,index):
-        
-        largest = index
-        left = self.left(index)
-        right = self.right(index)
-        if(left < self.size and self.higher(left,largest)):
-            largest = left
-        
-        if(right < self.size and self.higher(right,largest)):
-            largest = right
+    def updateNodeDistance(self,Id,newDistance,newOrientation,newParent):
+        if(Id not in self.NodeMap):
+            return False
 
-        if(largest != index):
-            self.swap(index,largest)
-            self.heapify(largest)
+        Node = self.NodeMap[Id]
+        assert(Node.distance > newDistance)
+        Node.distance = newDistance
+        Node.newOrientation = newOrientation
+        Node.parent = newParent
+        self.sort()
+        return True
 
+    def finish(self,id):
+        self.finished.add(id)
 
-    def bubbleUp(self,index):
-        while True:
-            if(index == 0):
+    def Isfinished(self,id):
+        return (id in self.finished)
+
+    def Isin(self,id):
+        return (id in self.NodeMap)
+    def Run(self,startId,startOrientation,endFunction,grid :Grid,distanceFunction):
+        '''endfunction is of the form Node->bool'''
+
+        self.addNewNode(
+            DijkstarNode(startOrientation,0,startId)
+        )
+        topNode = None
+        while (len(self.Nodes) != 0):
+            topNode = self.popNode()
+            self.finish(topNode.id)
+            if(endFunction(topNode)):
                 break
-            parent = self.parent(index)
-            if(self.higher(index,parent)):
-                self.swap(index,parent)
-            else:
-                break
-            index = parent
+            x,y = grid.getXY(topNode.id)
+            connections = grid.getNeighbours(x,y,topNode.orientation,topNode.distance,distanceFunction)
+            for connection in connections:
+                Id,distance,orientation = connection
+                if(not self.Isfinished(Id)):
+                    if(self.Isin(Id)):
+                        if(self.NodeMap[Id].distance > distance):
+                            self.updateNodeDistance(Id,distance,orientation,topNode)
+                    else:
+                        self.addNewNode(
+                            DijkstarNode(orientation,distance,Id,topNode)
+                        )
 
-
-
-    def push(self,value):
-        self.array.append(value)
-        self.size +=1
-        self.indexes[value] = self.size-1
-        self.bubbleUp(self.size-1)
-    
-    def empty(self):
-        return self.size == 0
-
-    def pop(self):
-        if(self.empty()):
-            raise Exception("Priority Queue Underflow")
-        self.swap(0,self.size-1)
-        self.size -=1
-        self.heapify(0)
-        return self.array.pop(-1)
+        path = []
+        while(topNode != None):
+            path.append(topNode.id)
+            topNode = topNode.parent
+        self.reset()
+        return path
 
 
 
@@ -106,19 +95,5 @@ class PriorityQueue:
 
 
 
-def main():
-    P = PriorityQueue(lambda x,y : x > y)
-    example = [1,8,5,7,6,3,4,9,8,6,3,2,1]
-    print(sorted(example))
-    for i in example:
-        P.push(i)
-
-    test = []
-    while(not P.empty()):
-        test.append(P.pop())
-
-    print(test)
 
 
-if __name__ == "__main__":
-    main()
