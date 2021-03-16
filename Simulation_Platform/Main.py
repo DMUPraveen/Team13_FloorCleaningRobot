@@ -80,6 +80,8 @@ def distanceFunction(D,O,tO,state):
         time += Robot.SprayTime
     return D+time
 
+def CompileSolution(path):
+    return "->".join(path)
 
 
 def distanceAvoidCleaned(Distance,Orientation,targetOrientation,state):

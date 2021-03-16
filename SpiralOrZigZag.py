@@ -1,7 +1,7 @@
 from Simulation_Platform.Simulation import Grid,Robot
 from Simulation_Platform.Main import replay
 from Simulation_Platform.HelperFunctions import Dijkstar
-from Simulation_Platform.Main import distanceFunction,show
+from Simulation_Platform.Main import distanceFunction,show,CompileSolution,distanceAvoidCleaned
 from Simulation_Platform.ExampleGrids import JanakSirsExampleGrid
 
 def createSpiralPath(columns,rows,startCorner,direction):
@@ -53,7 +53,7 @@ def createSpiralPath(columns,rows,startCorner,direction):
             robot.goToNeighboutSquareREL(turnDirection)
 
     path.append(grid.Id(robot.X,robot.Y))
-    replay(Grid(rows,columns),robot.moves,x,y,startOrientation[startCorner])
+    #replay(Grid(rows,columns),robot.moves,x,y,startOrientation[startCorner])
     return path
 
 
@@ -123,7 +123,7 @@ def createZigZagPath(columns,rows,startCorner,direction):
             dirIndex  = (dirIndex+1)%2
 
     path.append(grid.Id(robot.X,robot.Y))
-    replay(Grid(rows,columns),robot.moves,x,y,0)
+    #replay(Grid(rows,columns),robot.moves,x,y,0)
     return path
 
 
@@ -145,42 +145,103 @@ def Follow(grid:Grid,startX,startY,startOrientation,pathFunction):
             )
             robo.followPath(path)
 
-    replay(
-        JanakSirsExampleGrid(),
-        robo.moves,
-        startX,
-        startY,
-        startOrientation
-    )
     return (robo.time,robo.moves)
 
-            
+
+
+def FollowAvoidClean(grid:Grid,startX,startY,startOrientation,pathFunction):
+    gopath = pathFunction(grid.columns,grid.rows)
+    pathFinder = Dijkstar()
+    robo = Robot(grid,startX,startY,startOrientation)
+    while(len(gopath) != 0):
+        dest = gopath.pop(0)
+        if(grid.GetStateofId(dest) == grid.states["FREE"]):
+            destFunction = lambda Node : Node.id == dest
+            path = pathFinder.Run(
+                grid.Id(robo.X,robo.Y),
+                startOrientation,
+                destFunction,
+                grid,
+                distanceAvoidCleaned,
+                (0,0)
+
+            )
+            robo.followPath(path)
+
+    return (robo.time,robo.moves)        
 
 def makePathFunction(function,startCorner,direction):
     return (lambda columns,rows :  function(columns,rows,startCorner,direction) )
             
 
-
-    
-
-
-if __name__ == "__main__":
+def SpiralOrZigZag(gridmaker,startX,startY,startOrientation):
+    sols = []
     for pathFunction in [createSpiralPath,createZigZagPath]:
         for startCorner in range(0,4):
             for direction in [1,-1]:
 
                 pf = makePathFunction(pathFunction,startCorner,direction)
                 time,path = Follow(
-                    JanakSirsExampleGrid(),
+                    gridmaker(),
                     2,
                     9,
                     0,
                     pf
                 )
-                print(startCorner,direction)
-                print(time)
-                print(path)
+            sols.append((time,path))
+    sols.sort(key = lambda x : x[0])
+    print([i[0] for i in sols])
+    solution = sols.pop(0)
+    replay(
+        gridmaker(),
+        solution[1],
+        startX,
+        startY,
+        startOrientation
+    )
+    return solution
+
+        
+def SpiralOrZigZagAvoidCleaned(gridmaker,startX,startY,startOrientation):
+    sols = []
+    for pathFunction in [createSpiralPath,createZigZagPath]:
+        for startCorner in range(0,4):
+            for direction in [1,-1]:
+
+                pf = makePathFunction(pathFunction,startCorner,direction)
+                time,path = FollowAvoidClean(
+                    gridmaker(),
+                    startX,
+                    startY,
+                    startOrientation,
+                    pf
+                )
+            sols.append((time,path))
+    sols.sort(key = lambda x : x[0])
+    print([i[0] for i in sols])
+    solution = sols.pop(0)
+    replay(
+        gridmaker(),
+        solution[1],
+        startX,
+        startY,
+        startOrientation
+    )
+    return solution
+       
     
+    
+
+
+if __name__ == "__main__":
+    time,path = SpiralOrZigZagAvoidCleaned(
+        JanakSirsExampleGrid,
+        2,
+        9,
+        0
+    )
+    print(time)
+    print(CompileSolution(path))
 
 
     
