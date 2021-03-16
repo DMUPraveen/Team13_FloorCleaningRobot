@@ -24,7 +24,7 @@ def main(grid,robot):
                 return
         
 
-        Graphics.drawGrid()
+        Graphics.draw()
         
         pygame.display.update()
         Graphics.clear()

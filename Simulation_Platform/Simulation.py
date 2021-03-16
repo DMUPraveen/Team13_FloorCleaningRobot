@@ -136,6 +136,24 @@ class Robot:
     def addMove(self,move:str):
         self.moves.append(self.PossibleMoves[move])
 
+    def justmoveForward(self):
+        newX = self.X + self.Vx
+        newY = self.Y + self.Vy
+        state = self.grid.getTileState(newX,newY)
+        if(state == self.grid.states["FREE"] or state == self.grid.states["CLEANED"]):
+            self.X = newX
+            self.Y = newY
+            self.incrementTime(Robot.MoveForwardTime)# We don't clean the already cleaned tile
+            self.addMove("MoveForward")
+            return True
+        
+        return False
+
+    def Spray(self):
+        self.incrementTime(self.SprayTime)
+        self.addMove("Spray")
+        return self.grid.cleanTile(self.x,self.y)
+
     def moveForward(self):
         newX = self.X + self.Vx
         newY = self.Y + self.Vy
@@ -239,6 +257,21 @@ class Robot:
             if(not doneFlag):
                 return False
         return True
+
+    def play(self,command):
+        if(command == "SP"):
+            return self.Spray()
+        if(command == "MF"):
+            return self.justmoveForward()
+        if(command == "TR"):
+            self.turnClockwise()
+            return True
+        if(command == "TL"):
+            self.turnCounterClockWise()
+            return True
+
+        return False
+
 
 
 

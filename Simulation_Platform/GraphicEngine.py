@@ -23,7 +23,7 @@ class GFX:
         self.height = windowHeight
         ########################Read Only#####################
         self.grid = grid
-        self.robot = Robot
+        self.robot = robot
         self.cellSize = cellSize
         ######################################################
         self.clear()
@@ -45,9 +45,25 @@ class GFX:
             1
         )
 
+    def drawBot(self):
+        x= self.robot.X
+        y= self.robot.Y
+        pygame.draw.circle(
+            self.window,
+            self.Red,
+            (self.cellSize*x+self.cellSize//2,self.cellSize*y+self.cellSize//2),
+            self.cellSize//2,
+            0
+
+        )
+
+
     def drawGrid(self):
         for x in range(self.grid.columns):
             for y in range(self.grid.rows):
                 state = self.grid.getTileState(x,y)
                 self.drawBox(self.stateColorMap[state],x,y)
 
+    def draw(self):
+        self.drawGrid()
+        self.drawBot()
