@@ -1,4 +1,4 @@
-from Simulation import Grid
+from .Simulation import Grid
 JanakaSirsExmpleGridArray = [
     0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
     1, 0, 1, 0, 0, 0, 0, 1, 0, 1,

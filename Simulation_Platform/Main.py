@@ -1,14 +1,14 @@
 import pygame,sys
 from pygame.locals import *
-from Simulation import Grid,Robot
-from GraphicEngine import GFX
-from ExampleGrids import JanakSirsExampleGrid
+from .Simulation import Grid,Robot
+from .GraphicEngine import GFX
+from .ExampleGrids import JanakSirsExampleGrid
 from time import time
 
-from HelperFunctions import Dijkstar
+from .HelperFunctions import Dijkstar
 
 
-def main(grid,robot):
+def show(grid,robot):
     pygame.init()
 
 

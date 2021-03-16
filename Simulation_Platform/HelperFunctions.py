@@ -1,5 +1,5 @@
 
-from Simulation import Grid
+from .Simulation import Grid
 class DijkstarNode():
     def __init__(self,orientation,distance,Id,parent=None):
         self.orientation = orientation

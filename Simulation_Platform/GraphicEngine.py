@@ -1,4 +1,4 @@
-from Simulation import Grid, Robot
+from .Simulation import Grid, Robot
 import pygame
 from pygame.locals import *
 
