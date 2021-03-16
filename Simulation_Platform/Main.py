@@ -49,7 +49,7 @@ def replay(grid,robocommands,startX,startY,startOrientation):
         for event in pygame.event.get():
             if(event.type == QUIT):
                 pygame.quit()
-                print(robo.time)
+                #print(robo.time)
                 return
         
 
