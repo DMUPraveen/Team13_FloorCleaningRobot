@@ -159,7 +159,7 @@ def testDijkStart(grid,x,y):
     )
 
 
-def VisualGridMaker(rows,columns,gridArray=None):
+def VisualGridMaker(rows,columns,gridArray=None,startX=0,startY=0,startOrientation=0):
     if(gridArray == None):
         gridArray = [Grid.states["FREE"]]*(rows*columns)
     if(len(gridArray) != rows*columns):
@@ -171,8 +171,9 @@ def VisualGridMaker(rows,columns,gridArray=None):
     )
     pygame.init()
 
-    robo = Robot(grid,0,0,0)
-    grid.setstate(0,0,"FREE")
+    robo = Robot(grid,startX,startY,startOrientation)
+    
+    grid.setstate(startX,startY,"FREE")
     cellSize = 30
     width = grid.columns*cellSize
     height = grid.rows*cellSize
