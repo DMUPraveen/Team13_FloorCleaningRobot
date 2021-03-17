@@ -242,6 +242,8 @@ class Robot:
         return self.goToNeighboutSquareABS(orientation)
 
     def followPath(self,tilelist):
+        if(len(tilelist) == 0):
+            return
         if(tilelist[0] != self.grid.Id(self.X,self.Y)):
             return False
         tilelist.pop(0)

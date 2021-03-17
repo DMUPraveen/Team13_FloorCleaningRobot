@@ -1,7 +1,7 @@
 from Simulation_Platform.Simulation import Grid,Robot
 from Simulation_Platform.Main import replay
 from Simulation_Platform.HelperFunctions import Dijkstar
-from Simulation_Platform.Main import distanceFunction,show,CompileSolution,distanceAvoidCleaned
+from Simulation_Platform.Main import distanceFunction,show,CompileSolution,distanceAvoidCleaned,VisualGridMaker
 from Simulation_Platform.ExampleGrids import JanakSirsExampleGrid
 
 def createSpiralPath(columns,rows,startCorner,direction):
@@ -143,6 +143,7 @@ def Follow(grid:Grid,startX,startY,startOrientation,pathFunction):
                 grid,
                 distanceFunction
             )
+            
             robo.followPath(path)
 
     return (robo.time,robo.moves)

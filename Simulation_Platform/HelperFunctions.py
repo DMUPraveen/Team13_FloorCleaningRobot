@@ -86,6 +86,7 @@ class Dijkstar():
 
         path = []
         if(not finished):
+            self.reset()
             return path
         while(topNode != None):
             path.append(topNode.id)
