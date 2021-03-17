@@ -159,6 +159,77 @@ def testDijkStart(grid,x,y):
     )
 
 
+def VisualGridMaker(rows,columns,gridArray=None):
+    if(gridArray == None):
+        gridArray = [Grid.states["FREE"]]*(rows*columns)
+    if(len(gridArray) != rows*columns):
+        raise Exception("provided array doesn't have the correct dimentsion")
+    grid = Grid(
+        rows,
+        columns,
+        gridArray
+    )
+    pygame.init()
+
+    robo = Robot(grid,0,0,0)
+    grid.setstate(0,0,"FREE")
+    cellSize = 30
+    width = grid.columns*cellSize
+    height = grid.rows*cellSize
+    window = pygame.display.set_mode((width,height))
+    pygame.display.set_caption("Floor Cleaner")
+    Graphics = GFX(window,width,height,grid,robo,cellSize)
+    Running = True
+    while True:
+        
+        for event in pygame.event.get():
+            if(event.type == QUIT):
+                pygame.quit()
+                Running = False
+                break
+            if(event.type == MOUSEBUTTONDOWN):
+                if(event.button == 1):
+                    mouseX,mouseY = event.pos
+                    cellX,cellY = (mouseX//cellSize,mouseY//cellSize)
+                    if(cellX != robo.X or cellY != robo.Y):
+                        
+                        
+                        if(grid.getTileState(cellX,cellY) == grid.states["FREE"]):
+                            grid.setstate(cellX,cellY,"BLOCKED")
+                        elif(grid.getTileState(cellX,cellY) == grid.states["BLOCKED"]):
+                            grid.setstate(cellX,cellY,"FREE")
+                if(event.button == 3):
+                    mouseX,mouseY = event.pos
+                    cellX,cellY = (mouseX//cellSize,mouseY//cellSize)
+                    if(grid.getTileState(cellX,cellY) == grid.states["FREE"]):
+                            robo.X,robo.Y = cellX,cellY
+
+            if(event.type == KEYDOWN):
+                if(event.key == K_w):
+                    robo.orientation = robo.Directions["N"]
+                elif(event.key == K_d):
+                    robo.orientation = robo.Directions["E"]
+                elif(event.key == K_s):
+                    robo.orientation = robo.Directions["S"]
+                elif(event.key == K_a):
+                    robo.orientation = robo.Directions["W"]               
+
+
+        if(not Running):
+            break
+
+        Graphics.draw()
+        
+        pygame.display.update()
+        Graphics.clear()
+
+
+    def gridMaker():
+        return Grid(rows,columns,[tile for tile in grid.array])
+        
+    return (gridMaker,robo.X,robo.Y,robo.orientation)
+
+
 
 
 if __name__ == "__main__":

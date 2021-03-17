@@ -48,14 +48,27 @@ class GFX:
     def drawBot(self):
         x= self.robot.X
         y= self.robot.Y
+        radius = self.cellSize//2
+        center = (self.cellSize*x+radius,self.cellSize*y+radius)
         pygame.draw.circle(
             self.window,
             self.Red,
-            (self.cellSize*x+self.cellSize//2,self.cellSize*y+self.cellSize//2),
-            self.cellSize//2,
+            center,
+            radius,
             0
 
         )
+        pygame.draw.line(
+            self.window,
+            self.Black,
+            center,
+            (center[0]+radius*self.robot.DirectionMap[self.robot.orientation][0],
+                center[1]+radius*self.robot.DirectionMap[self.robot.orientation][1],
+            ),
+            4
+
+        )
+
 
 
     def drawGrid(self):
