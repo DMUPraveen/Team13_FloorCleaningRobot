@@ -183,14 +183,14 @@ def SpiralOrZigZag(gridmaker,startX,startY,startOrientation):
                 pf = makePathFunction(pathFunction,startCorner,direction)
                 time,path = Follow(
                     gridmaker(),
-                    2,
-                    9,
-                    0,
+                    startX,
+                    startY,
+                    startOrientation,
                     pf
                 )
-            sols.append((time,path))
+                sols.append((time,path))
     sols.sort(key = lambda x : x[0])
-    #print([i[0] for i in sols])
+    print([i[0] for i in sols])
     solution = sols.pop(0)
     '''
     replay(
@@ -218,9 +218,9 @@ def SpiralOrZigZagAvoidCleaned(gridmaker,startX,startY,startOrientation):
                     startOrientation,
                     pf
                 )
-            sols.append((time,path))
+                sols.append((time,path))
     sols.sort(key = lambda x : x[0])
-    #print([i[0] for i in sols])
+    print([i[0] for i in sols])
     solution = sols.pop(0)
     '''
     replay(
